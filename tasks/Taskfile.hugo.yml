@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+silent: true
+env:
+  HUGO_TARGET_ENV: local
+  SITE: blog.zacharyloeber.com
+  PUBLISHPATH: preview
+  BASEURL: http://localhost/
+  DISQUSSHORTNAME: zacharyloeber-com
+  POST_DATE: "{{.BUILD_DATE_SHORT}}"
+  # Construct the hugo wrapper for most operations (may take this out later)
+  hugo_cmd: hugo -s "{{.PROJECT_PATH}}"
+
+tasks:
+  show:
+    desc: Show extra variables
+    cmds:
+      - |
+        echo "ROOT_PATH: {{.ROOT_DIR}}"
+        echo "LOCAL_BIN_PATH: {{.LOCAL_BIN_PATH}}"
+        echo "HUGO_TARGET_ENV: {{.HUGO_TARGET_ENV}}"
+        echo "SITE: {{.SITE}}"
+        echo "CONTENT_PATH: {{.CONTENT_PATH}}"
+        echo "BASEURL: {{.BASEURL}}"
+        echo "PUBLISHPATH: {{.PUBLISHPATH}}"
+        echo "POST_DATE: {{.POST_DATE}}"
+        echo "hugo_cmd (cmd): {{.hugo_cmd}}"
+        echo "PROJECT_PATH: {{.PROJECT_PATH}}"
+
+  # Deployment configuration settings
+  # dpl ?= $(PROJECT_PATH)/config/$(HUGO_TARGET_ENV).env
+  # -include $(dpl)
+  # export $(shell sed 's/=.*//' $(dpl))
+
+  serve:
+    desc: Start a local http server on all interfaces
+    cmds:
+      - |
+        hugo -s {{.PROJECT_PATH}} -w server
+  
+  serve:drafts:
+    desc: Start a local http server on all interfaces (with drafts)
+    cmds:
+      - |
+        hugo -s {{.PROJECT_PATH}} -w --buildDrafts server
+
+  preview:
+    desc: Generate the website content (with drafts)
+    cmds:
+      - |
+        {{.hugo_cmd}} --buildDrafts --gc
+
+  new:post:
+    desc: Create a new post
+    cmds:
+      - |
+        {{.hugo_cmd}} new -k article {{.CONTENT_PATH}}/posts/drafts/{{.POST_DATE}}.md
+        echo "Created new post at: {{.CONTENT_PATH}}/posts/drafts/{{.POST_DATE}}.md"

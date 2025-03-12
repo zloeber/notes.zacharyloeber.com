@@ -1,6 +1,11 @@
 ---
-title: Welcome to Quartz
+title: Welcome to Zachary Loeber's Notes
+author: Zachary Loeber
+date: 2025-3-12
+categories:
+  - notes
+tags: []
 ---
+## Links
 
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
+- [Blog](https://blog.zacharyloeber.com)
